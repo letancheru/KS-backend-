@@ -53,7 +53,14 @@ class ProjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $project = Project::create($request->all());
+        $projectData = $request->only([
+            'title', 'description', 'project_category_id', 'client_name',
+            'client_email', 'project_manager', 'start_date', 'end_date',
+            'budget', 'status', 'location', 'notes',
+        ]);
+
+        $project = Project::create($projectData);
+
 
         if ($request->hasFile('banner')) {
 
@@ -131,7 +138,13 @@ class ProjectController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $project->update($request->all());
+        $projectData = $request->only([
+            'title', 'description', 'project_category_id', 'client_name',
+            'client_email', 'project_manager', 'start_date', 'end_date',
+            'budget', 'status', 'location', 'notes',
+        ]);
+
+        $project->update($projectData);
 
         if ($request->hasFile('banner')) {
             // Delete the previous banner if it exists
