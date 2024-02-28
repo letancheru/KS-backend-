@@ -18,7 +18,9 @@ use App\Http\Controllers\ProjectController;
 */
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::post('/auth/login', [UserController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('project-categories', ProjectCategoryController::class);
     Route::apiResource('users', UserController::class);
@@ -26,4 +28,3 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-Route::post('/auth/login', [UserController::class, 'login']);
