@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectController extends Controller
 {
@@ -100,8 +101,9 @@ class ProjectController extends Controller
      * @param  Project  $project
      * @return JsonResponse
      */
-    public function show(Project $project): JsonResponse
+    public function show($id): JsonResponse
     {
+        $project = Project::with('category')->findOrFail($id);
         return response()->json($project);
     }
 
@@ -114,6 +116,8 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project): JsonResponse
     {
+
+
         $validator = validator($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -128,7 +132,7 @@ class ProjectController extends Controller
             'location' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
             'attachments.*' => 'nullable|file|mimes:pdf,doc,docx',
-            'banner' => 'required|image|mimes:jpeg,png,jpg,gif',
+            'banner' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'images' => 'nullable|array',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif',
         ]);
@@ -189,6 +193,50 @@ class ProjectController extends Controller
         return response()->json(['message' => 'Project Updated successfully', 'project'=>$project], 200);
     }
 
+    public function updateImagesAndBanner(Request $request, $id)
+    {
+
+        $project = Project::findOrFail($id);
+
+        // Validate the request
+        $validator = validator($request->all(), [
+            'images.*' => 'nullable|string',
+            'banner' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $project = Project::findOrFail($id);
+
+        if ($request->has('images') && $request->input('images')!=null && is_array($request->input('images'))) {
+            // Decode and store each image
+            $imagePaths = [];
+            foreach ($request->input('images') as $base64Image) {
+                $decodedImage = base64_decode($base64Image);
+                $imagePath = 'project_images/' . uniqid() . '.png';
+                Storage::disk('public')->put($imagePath, $decodedImage);
+                $imagePaths[] = $imagePath;
+            }
+
+            // Update project with the new image paths
+            $project->update(['images' => $imagePaths]);
+        }
+
+        // Handle base64 banner update
+        if ($request->has('banner') && $request->input('banner')!=null) {
+            $base64Banner = $request->input('banner');
+            $decodedBanner = base64_decode($base64Banner);
+            $bannerPath = 'project_banners/' . uniqid() . '.png';
+            Storage::disk('public')->put($bannerPath, $decodedBanner);
+
+            // Update project with the new banner path
+            $project->update(['banner' => $bannerPath]);
+        }
+
+        return response()->json(['message' => 'Images and banner updated successfully', 'project' => $project], 200);
+    }
     /**
      * Remove the specified resource from storage.
      *

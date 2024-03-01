@@ -19,12 +19,15 @@ use App\Http\Controllers\ProjectController;
 
 
 Route::post('/auth/login', [UserController::class, 'login']);
+Route::get('projects-list', [ProjectController::class,'index']);
+Route::get('project-list/{id}', [ProjectController::class,'show']);
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('project-categories', ProjectCategoryController::class);
     Route::apiResource('users', UserController::class);
-
+    Route::put('/projects/{id}/images-and-banner', [ProjectController::class, 'updateImagesAndBanner'])->name('ProjectController@updateImagesAndBanner');
+    Route::get('/user', [UserController::class, 'getUser']);
 });
 
 
