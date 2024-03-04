@@ -28,6 +28,7 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::put('/projects/{id}/images-and-banner', [ProjectController::class, 'updateImagesAndBanner'])->name('ProjectController@updateImagesAndBanner');
     Route::get('/user', [UserController::class, 'getUser']);
+    Route::get('/statistics', [ProjectController::class, 'statistics']);
 });
 
 

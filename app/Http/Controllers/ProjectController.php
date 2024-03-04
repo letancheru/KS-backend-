@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\ProjectCategory;
+use App\Models\User;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -18,8 +21,17 @@ class ProjectController extends Controller
      */
     public function index(): JsonResponse
     {
-        $projects = Project::all();
-        return response()->json($projects);
+        $projects = Project::latest()->get();
+           return response()->json($projects);
+
+    }
+
+    public function statistics(): JsonResponse
+    {
+            $projects = Project::count();
+            $categories = ProjectCategory::count();
+            $users = User::count();
+            return response()->json(['projects' => $projects, 'categories' => $categories, 'users' => $users]);
     }
 
     /**
@@ -60,8 +72,16 @@ class ProjectController extends Controller
             'budget', 'status', 'location', 'notes',
         ]);
 
-        $project = Project::create($projectData);
+        $slug = Str::slug($projectData['title']);
 
+        $count = Project::where('slug', $slug)->count();
+        if ($count > 0) {
+            $slug .= '-' . uniqid();
+        }
+
+        $projectData['slug'] = $slug;
+
+        $project = Project::create($projectData);
 
         if ($request->hasFile('banner')) {
 

@@ -29,6 +29,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->json('images')->nullable();
             $table->string('banner')->nullable();
+            $table->string('slug')->unique();
             $table->json('attachments')->nullable();
             $table->timestamps();
         });
