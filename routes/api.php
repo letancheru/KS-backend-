@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectCategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PartnerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +21,11 @@ use App\Http\Controllers\ProjectController;
 
 Route::post('/auth/login', [UserController::class, 'login']);
 Route::get('projects-list', [ProjectController::class,'index']);
+Route::get('partners-list', [PartnerController::class,'index']);
 Route::get('project-list/{id}', [ProjectController::class,'show']);
 
 Route::middleware('auth:api')->group(function () {
+    Route::apiResource('partners', PartnerController::class);
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('project-categories', ProjectCategoryController::class);
     Route::apiResource('users', UserController::class);
