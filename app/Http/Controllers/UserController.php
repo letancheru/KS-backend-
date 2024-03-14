@@ -115,6 +115,10 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully'], 204);
     }
 
+    public function password(){
+        $password =  Hash::make('password');
+        return response()->json($password, 200);
+    }
     public function login(Request $request)
     {
 

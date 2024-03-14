@@ -70,7 +70,11 @@ class PartnerController extends Controller
      */
     public function show($id)
     {
-        //
+        $partner = Partner::find($id);
+        if(!$partner){
+            return response()->json(['error' => 'Partner not found'], 404);
+        }
+        return response()->json($partner);
     }
 
 
@@ -95,5 +99,30 @@ class PartnerController extends Controller
         $partner->delete();
 
         return response()->json(['message' => 'Partner deleted successfully']);
+    }
+
+    public function updateBanner(Request $request, $id)
+    {
+
+        $partner = Partner::findOrFail($id);
+
+        $validator = validator($request->all(), [
+            'banner' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        if ($request->has('banner') && $request->input('banner')!=null) {
+            $base64Banner = $request->input('banner');
+            $decodedBanner = base64_decode($base64Banner);
+            $bannerPath = 'partners/' . uniqid() . '.png';
+            Storage::disk('public')->put($bannerPath, $decodedBanner);
+
+            $partner->update(['banner' => $bannerPath]);
+        }
+
+        return response()->json(['message' => 'Images and banner updated successfully', 'project' => $partner], 200);
     }
 }
