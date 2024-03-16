@@ -8,6 +8,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MailConfigController;
+use App\Http\Controllers\TeamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,7 @@ use App\Http\Controllers\MailConfigController;
 Route::post('/auth/login', [UserController::class, 'login']);
 Route::get('projects-list', [ProjectController::class,'index']);
 Route::get('partners-list', [PartnerController::class,'index']);
+Route::get('teams-list', [TeamController::class,'index']);
 Route::get('project-list/{id}', [ProjectController::class,'show']);
 Route::get('password', [UserController::class,'password']);
 // Route::post('contacts', [ContactController::class, 'store']);
@@ -42,6 +44,8 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/partners/{id}/banner', [PartnerController::class, 'updateBanner'])->name('PartnerController@updateBanner');
     Route::get('/user', [UserController::class, 'getUser']);
     Route::get('/statistics', [ProjectController::class, 'statistics']);
+    Route::apiResource('teams', TeamController::class);
+    Route::put('/teams/{id}/image', [TeamController::class, 'updateImage'])->name('TeamController@updateImage');
 
 });
 
