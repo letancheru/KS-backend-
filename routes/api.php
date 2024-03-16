@@ -9,6 +9,7 @@ use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MailConfigController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\BusinessSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,6 +36,8 @@ Route::get('password', [UserController::class,'password']);
 Route::apiResource('contacts', ContactController::class);
 Route::post('/mail-config', [MailConfigController::class, 'store']);
 Route::get('/mail-config', [MailConfigController::class, 'getMailConfig']);
+Route::post('/business-setup', [BusinessSettingController::class, 'store']);
+Route::get('/business-setup', [BusinessSettingController::class, 'index']);
 Route::middleware('auth:api')->group(function () {
     Route::apiResource('partners', PartnerController::class);
     Route::apiResource('projects', ProjectController::class);
