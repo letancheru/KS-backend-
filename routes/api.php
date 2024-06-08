@@ -10,6 +10,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MailConfigController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\BusinessSettingController;
+use App\Http\Controllers\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,16 +30,24 @@ Route::get('partners-list', [PartnerController::class,'index']);
 Route::get('teams-list', [TeamController::class,'index']);
 Route::get('project-list/{id}', [ProjectController::class,'show']);
 Route::get('password', [UserController::class,'password']);
-// Route::post('contacts', [ContactController::class, 'store']);
-// Route::get('contacts', [ContactController::class, 'index']);
-// Route::get('contacts/{id}', [ContactController::class, 'show']);
-// Route::delete('contacts/{id}', [ContactController::class, 'show']);
+Route::post('contacts', [ContactController::class, 'store']);
+Route::get('contacts', [ContactController::class, 'index']);
+
+Route::get('service', [ServiceController::class, 'index']);
+
+Route::get('contacts/{id}', [ContactController::class, 'show']);
+Route::delete('contacts/{id}', [ContactController::class, 'show']);
 Route::apiResource('contacts', ContactController::class);
 Route::post('/mail-config', [MailConfigController::class, 'store']);
 Route::get('/mail-config', [MailConfigController::class, 'getMailConfig']);
 Route::post('/business-setup', [BusinessSettingController::class, 'store']);
 Route::get('/business-setup', [BusinessSettingController::class, 'index']);
 Route::middleware('auth:api')->group(function () {
+    Route::post('service', [ServiceController::class, 'store']);
+    Route::get('service/{id}', [ServiceController::class, 'show']);
+    Route::put('service/{id}', [ServiceController::class, 'update']);
+    Route::delete('service/{id}', [ServiceController::class, 'destroy']);
+    Route::put('service/{id}/images-and-banner', [ServiceController::class, 'updateImagesAndBanner']);
     Route::apiResource('partners', PartnerController::class);
     Route::apiResource('projects', ProjectController::class);
     Route::apiResource('project-categories', ProjectCategoryController::class);

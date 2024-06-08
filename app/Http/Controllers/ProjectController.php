@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\ProjectCategory;
 use App\Models\User;
+use App\Models\Service;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use Illuminate\Http\JsonResponse;
@@ -31,6 +32,7 @@ class ProjectController extends Controller
             $projects = Project::count();
             $categories = ProjectCategory::count();
             $users = User::count();
+            $service = Service::count();
             return response()->json(['projects' => $projects, 'categories' => $categories, 'users' => $users]);
     }
 
