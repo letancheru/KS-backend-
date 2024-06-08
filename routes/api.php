@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectCategoryController;
+use App\Http\Controllers\ProjectCategoryNameController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PartnerController;
@@ -42,6 +43,7 @@ Route::post('/mail-config', [MailConfigController::class, 'store']);
 Route::get('/mail-config', [MailConfigController::class, 'getMailConfig']);
 Route::post('/business-setup', [BusinessSettingController::class, 'store']);
 Route::get('/business-setup', [BusinessSettingController::class, 'index']);
+Route::apiResource('project-category-name', ProjectCategoryNameController::class);
 Route::middleware('auth:api')->group(function () {
     Route::post('service', [ServiceController::class, 'store']);
     Route::get('service/{id}', [ServiceController::class, 'show']);
