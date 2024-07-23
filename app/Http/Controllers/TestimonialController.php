@@ -11,8 +11,8 @@ class TestimonialController extends Controller
 {
     public function index()
     {
-        $service = TestimonialModel::latest()->get();
-        return response()->json($service)->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+        $testimonisl = TestimonialModel::latest()->get();
+        return response()->json($testimonisl)->header('Cache-Control', 'no-cache, no-store, must-revalidate')
         ->header('Pragma', 'no-cache')
         ->header('Expires', '0');
     }
@@ -38,15 +38,15 @@ class TestimonialController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $serviceData = $request->only([
+        $testimonislData = $request->only([
             'name', 'description',
         ]);
-        $service = TestimonialModel::create($serviceData);
+        $testimonisl = TestimonialModel::create($testimonislData);
 
         if ($request->hasFile('banner')) {
 
             $bannerPath = $request->file('banner')->store('testimonials_banners', 'public');
-            $service->update(['banner' => $bannerPath]);
+            $testimonisl->update(['banner' => $bannerPath]);
         }
 
         if ($request->hasFile('images')) {
@@ -57,23 +57,23 @@ class TestimonialController extends Controller
                 $imagePaths[] = $imagePath;
             }
 
-            $service->update(['images' => $imagePaths]);
+            $testimonisl->update(['images' => $imagePaths]);
         }
 
-        return response()->json(['message' => 'Service Added successfully', 'service'=>$service], 201);
+        return response()->json(['message' => 'testimonisl Added successfully', 'testimonisl'=>$testimonisl], 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  TestimonialModel  $service
+     * @param  TestimonialModel  $testimonisl
      * @return JsonResponse
      */
     public function show($id): JsonResponse
     {
-        $service = TestimonialModel::findOrFail($id);
-        if($service){
-            return response()->json($service,200);
+        $testimonisl = TestimonialModel::findOrFail($id);
+        if($testimonisl){
+            return response()->json($testimonisl,200);
         }else{
             return response()->json([],200 );
         }
@@ -82,7 +82,7 @@ class TestimonialController extends Controller
     /**
      * Update the specified resource in storage.
      *  @param  StoreTestimonialRequest  $request
-     * @param  TestimonialModel  $service
+     * @param  TestimonialModel  $testimonisl
      * @return JsonResponse
      */
     public function update(Request $request, $id): JsonResponse
@@ -100,27 +100,27 @@ class TestimonialController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-       $service = TestimonialModel::findOrFail($id);
+       $testimonisl = TestimonialModel::findOrFail($id);
 
-       $service->serviceName = $request->serviceName;
-       $service->description=$request->description;
-       $service->save();
+       $testimonisl->name = $request->name;
+       $testimonisl->description=$request->description;
+       $testimonisl->save();
 
 
 
         if ($request->hasFile('banner')) {
             // Delete the previous banner if it exists
-            if ( $service->banner) {
-                Storage::disk('public')->delete($service->banner);
+            if ( $testimonisl->banner) {
+                Storage::disk('public')->delete($testimonisl->banner);
             }
 
             $bannerPath = $request->file('banner')->store('testimonial_banners', 'public');
-            $service->update(['banner' => $bannerPath]);
+            $testimonisl->update(['banner' => $bannerPath]);
         }
 
         if ($request->hasFile('images')) {
             // Delete the previous images if they exist
-            foreach ($service->images as $image) {
+            foreach ($testimonisl->images as $image) {
                 Storage::disk('public')->delete($image);
             }
 
@@ -130,16 +130,16 @@ class TestimonialController extends Controller
                 $imagePaths[] = $imagePath;
             }
 
-            $service->update(['images' => $imagePaths]);
+            $testimonisl->update(['images' => $imagePaths]);
         }
 
-        return response()->json(['message' => 'service Updated successfully', 'service'=>$service], 200);
+        return response()->json(['message' => 'testimonisl Updated successfully', 'testimonisl'=>$testimonisl], 200);
     }
 
     public function updateImagesAndBanner(Request $request, $id)
     {
 
-        $service = TestimonialModel::findOrFail($id);
+        $testimonisl = TestimonialModel::findOrFail($id);
 
         // Validate the request
         $validator = validator($request->all(), [
@@ -151,7 +151,7 @@ class TestimonialController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $service = TestimonialModel::findOrFail($id);
+        $testimonisl = TestimonialModel::findOrFail($id);
 
         if ($request->has('images') && $request->input('images')!=null && is_array($request->input('images'))) {
             // Decode and store each image
@@ -164,7 +164,7 @@ class TestimonialController extends Controller
             }
 
 
-            $service->update(['images' => $imagePaths]);
+            $testimonisl->update(['images' => $imagePaths]);
         }
 
         // Handle base64 banner update
@@ -175,10 +175,10 @@ class TestimonialController extends Controller
             Storage::disk('public')->put($bannerPath, $decodedBanner);
 
             // Update project with the new banner path
-            $service->update(['banner' => $bannerPath]);
+            $testimonisl->update(['banner' => $bannerPath]);
         }
 
-        return response()->json(['message' => 'Images and banner updated successfully', 'service' => $service], 200);
+        return response()->json(['message' => 'Images and banner updated successfully', 'testimonisl' => $testimonisl], 200);
     }
     /**
 
@@ -186,21 +186,21 @@ class TestimonialController extends Controller
 
      * Remove the specified resource from storage.
      *
-     * @param  TestimonialModel  $service
+     * @param  TestimonialModel  $testimonisl
      * @return JsonResponse
      */
     public function destroy($id):JsonResponse
     {
 
-        $service = TestimonialModel::findOrFail($id);
-        if($service){
-            $service->delete();
+        $testimonisl = TestimonialModel::findOrFail($id);
+        if($testimonisl){
+            $testimonisl->delete();
             return response()->json(['message'=>'Deleted Successfully!'],204);
         }
         else{
-            return response()->json( ['message'=>'Service Not Found'], 400);
+            return response()->json( ['message'=>'Testimonials Not Found'], 400);
         }
-        //return response()->json(['message' => 'Service deleted successfully'], 204);
+        //return response()->json(['message' => 'testimonisl deleted successfully'], 204);
 
     } //
 }

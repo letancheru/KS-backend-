@@ -48,15 +48,7 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'project_category_id' => 'required|exists:project_categories,id',
-            'client_name' => 'nullable|string|max:255',
-            'client_email' => 'nullable|email|max:255',
-            'project_manager' => 'nullable|string|max:255',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
-            'budget' => 'nullable|numeric|min:0',
-            'status' => 'required|in:pending,in_progress,completed',
-            'location' => 'nullable|string|max:255',
-            'notes' => 'nullable|string',
+            'link' => 'nullable|string|max:255',
             'attachments.*' => 'nullable|file|mimes:pdf,doc,docx',
             'banner' => 'required|image|mimes:jpeg,png,jpg,gif',
             'images' => 'nullable|array',
@@ -70,8 +62,7 @@ class ProjectController extends Controller
 
         $projectData = $request->only([
             'title', 'description', 'project_category_id', 'client_name',
-            'client_email', 'project_manager', 'start_date', 'end_date',
-            'budget', 'status', 'location', 'notes',
+            
         ]);
 
         $slug = Str::slug($projectData['title']);
@@ -114,7 +105,7 @@ class ProjectController extends Controller
             $project->update(['attachments' => $attachmentPaths]);
         }
 
-        return response()->json(['message' => 'Project Created successfully', 'project'=>$project], 201);
+        return response()->json(['message' => 'Product Created successfully', 'project'=>$project], 201);
     }
 
     /**
@@ -144,15 +135,7 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'project_category_id' => 'required|exists:project_categories,id',
-            'client_name' => 'nullable|string|max:255',
-            'client_email' => 'nullable|email|max:255',
-            'project_manager' => 'nullable|string|max:255',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date',
-            'budget' => 'nullable|numeric|min:0',
-            'status' => 'required|in:pending,in_progress,completed',
-            'location' => 'nullable|string|max:255',
-            'notes' => 'nullable|string',
+            'link' => 'nullable|string|max:255',
             'attachments.*' => 'nullable|file|mimes:pdf,doc,docx',
             'banner' => 'nullable|image|mimes:jpeg,png,jpg,gif',
             'images' => 'nullable|array',
@@ -165,9 +148,8 @@ class ProjectController extends Controller
         }
 
         $projectData = $request->only([
-            'title', 'description', 'project_category_id', 'client_name',
-            'client_email', 'project_manager', 'start_date', 'end_date',
-            'budget', 'status', 'location', 'notes',
+            'title', 'description', 'project_category_id', 'link',
+            
         ]);
 
         $project->update($projectData);
@@ -212,7 +194,7 @@ class ProjectController extends Controller
             $project->update(['attachments' => $attachmentPaths]);
         }
 
-        return response()->json(['message' => 'Project Updated successfully', 'project'=>$project], 200);
+        return response()->json(['message' => 'Product Updated successfully', 'project'=>$project], 200);
     }
 
     public function updateImagesAndBanner(Request $request, $id)
@@ -268,6 +250,6 @@ class ProjectController extends Controller
     public function destroy(Project $project): JsonResponse
     {
         $project->delete();
-        return response()->json(['message' => 'Project deleted successfully'], 204);
+        return response()->json(['message' => 'Product deleted successfully'], 204);
     }
 }
